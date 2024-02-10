@@ -5,8 +5,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Country(
+	val id: Int,
 	val name: String,
 	@SerialName("iso_alpha2") val isoAlpha2: String,
 	@SerialName("iso_alpha3") val isoAlpha3: String,
-	@SerialName("iso_numeric") val isoNumeric: String
+	@SerialName("iso_numeric") val isoNumeric: String,
+	val region: Int
 )
