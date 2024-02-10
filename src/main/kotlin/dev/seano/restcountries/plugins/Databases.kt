@@ -2,18 +2,21 @@
 
 package dev.seano.restcountries.plugins
 
+import dev.seano.restcountries.DatabaseSingleton
 import io.ktor.server.application.*
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.dao.id.IntIdTable
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.Transaction
+import org.jetbrains.exposed.sql.batchInsert
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 
 fun Application.configureDatabases() {
-	val database = Database.connect(
-		url = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", user = "root", driver = "org.h2.Driver", password = ""
-	)
+	val embedded = environment.config.property("ktor.environment").getString().equals("dev", true)
+	val database = DatabaseSingleton.getInstance(environment.config).connect(embedded)
 
 	TransactionManager.defaultDatabase = database
 
