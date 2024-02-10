@@ -17,13 +17,19 @@ fun Application.configureDatabases() {
 	TransactionManager.defaultDatabase = database
 
 	transaction {
-		SchemaUtils.create(Countries)
+		SchemaUtils.create(Countries, Regions)
 	}
 }
 
+@Suppress("unused")
 object Countries : IntIdTable("countries") {
 	val name = varchar("name", 100).uniqueIndex()
 	val isoAlpha2 = varchar("iso_alpha2", 2).uniqueIndex()
 	val isoAlpha3 = varchar("iso_alpha3", 3).uniqueIndex()
 	val isoNumeric = varchar("iso_numeric", 3).uniqueIndex()
+	val region = reference("region", Regions)
+}
+
+object Regions : IntIdTable("regions") {
+	val name = varchar("name", 100).uniqueIndex()
 }
