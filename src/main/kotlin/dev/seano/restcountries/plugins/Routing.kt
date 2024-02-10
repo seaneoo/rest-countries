@@ -1,6 +1,7 @@
 package dev.seano.restcountries.plugins
 
 import dev.seano.restcountries.models.Country
+import dev.seano.restcountries.models.Flag
 import dev.seano.restcountries.models.Region
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -35,16 +36,19 @@ fun Application.configureRouting() {
 
 		get("/countries") {
 			query {
-				val countries = (Countries innerJoin Regions).selectAll().sortedBy { it[Countries.id] }.map {
-					Country(
-						it[Countries.id].value,
-						it[Countries.name],
-						it[Countries.isoAlpha2],
-						it[Countries.isoAlpha3],
-						it[Countries.isoNumeric],
-						it[Regions.id].value
-					)
-				}
+				val countries =
+					(Countries innerJoin Regions innerJoin Flags).selectAll().sortedBy { it[Countries.id] }.map {
+						val flag = Flag(it[Flags.svg], it[Flags.png])
+						Country(
+							it[Countries.id].value,
+							it[Countries.name],
+							it[Countries.isoAlpha2],
+							it[Countries.isoAlpha3],
+							it[Countries.isoNumeric],
+							it[Regions.id].value,
+							flag
+						)
+					}
 
 				call.respond(countries)
 			}

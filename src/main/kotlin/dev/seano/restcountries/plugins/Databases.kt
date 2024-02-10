@@ -18,7 +18,7 @@ fun Application.configureDatabases() {
 	TransactionManager.defaultDatabase = database
 
 	transaction {
-		SchemaUtils.create(Countries, Regions)
+		SchemaUtils.create(Countries, Regions, Flags)
 
 		//#region Temporary data insertion
 		val regions = listOf("Asia", "Africa", "South America", "North America", "Europe", "Oceania")
@@ -31,6 +31,11 @@ fun Application.configureDatabases() {
 			it[isoNumeric] = "840"
 			it[region] = 4
 		}
+		Flags.insert {
+			it[countryCode] = "US"
+			it[svg] = "https://flagcdn.com/us.svg"
+			it[png] = "https://flagcdn.com/w320/us.png"
+		}
 
 		Countries.insert {
 			it[name] = "Canada"
@@ -38,6 +43,11 @@ fun Application.configureDatabases() {
 			it[isoAlpha3] = "CAN"
 			it[isoNumeric] = "124"
 			it[region] = 4
+		}
+		Flags.insert {
+			it[countryCode] = "CA"
+			it[svg] = "https://flagcdn.com/ca.svg"
+			it[png] = "https://flagcdn.com/w320/ca.png"
 		}
 
 		Countries.insert {
@@ -47,6 +57,11 @@ fun Application.configureDatabases() {
 			it[isoNumeric] = "826"
 			it[region] = 5
 		}
+		Flags.insert {
+			it[countryCode] = "GB"
+			it[svg] = "https://flagcdn.com/gb.svg"
+			it[png] = "https://flagcdn.com/w320/gb.png"
+		}
 
 		Countries.insert {
 			it[name] = "Japan"
@@ -54,6 +69,11 @@ fun Application.configureDatabases() {
 			it[isoAlpha3] = "JPN"
 			it[isoNumeric] = "392"
 			it[region] = 1
+		}
+		Flags.insert {
+			it[countryCode] = "JP"
+			it[svg] = "https://flagcdn.com/jp.svg"
+			it[png] = "https://flagcdn.com/w320/jp.png"
 		}
 		//#endregion
 	}
@@ -74,4 +94,10 @@ object Countries : IntIdTable("countries") {
 
 object Regions : IntIdTable("regions") {
 	val name = varchar("name", 100).uniqueIndex()
+}
+
+object Flags : IntIdTable("flags") {
+	val countryCode = reference("country_code", Countries.isoAlpha2)
+	val svg = varchar("svg", 27).uniqueIndex()
+	val png = varchar("png", 32).uniqueIndex()
 }
