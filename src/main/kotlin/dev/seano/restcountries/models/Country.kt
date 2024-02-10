@@ -10,5 +10,6 @@ data class Country(
 	@SerialName("iso_alpha2") val isoAlpha2: String,
 	@SerialName("iso_alpha3") val isoAlpha3: String,
 	@SerialName("iso_numeric") val isoNumeric: String,
-	val region: Int
+	val region: Int,
+	val flags: Flag
 )
