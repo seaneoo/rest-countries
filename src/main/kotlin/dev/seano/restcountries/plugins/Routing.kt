@@ -38,7 +38,7 @@ fun Application.configureRouting() {
 		get("/regions") {
 			query {
 				val regions = Regions.selectAll().sortedBy { it[Regions.id] }.map {
-					Region(it[Regions.id].value, it[Regions.name])
+					Region(it[Regions.id], it[Regions.name])
 				}
 
 				call.respond(regions)
@@ -47,19 +47,18 @@ fun Application.configureRouting() {
 
 		get("/countries") {
 			query {
-				val countries =
-					(Countries innerJoin Regions innerJoin Flags).selectAll().sortedBy { it[Countries.id] }.map {
-						val flag = Flag(it[Flags.svg], it[Flags.png])
-						Country(
-							it[Countries.id].value,
-							it[Countries.name],
-							it[Countries.isoAlpha2],
-							it[Countries.isoAlpha3],
-							it[Countries.isoNumeric],
-							it[Regions.id].value,
-							flag
-						)
-					}
+				val countries = (Countries innerJoin Flags).selectAll().sortedBy { it[Countries.id] }.map {
+					val flag = Flag(it[Flags.svg], it[Flags.png])
+					Country(
+						it[Countries.id],
+						it[Countries.name],
+						it[Countries.isoAlpha2],
+						it[Countries.isoAlpha3],
+						it[Countries.isoNumeric],
+						it[Countries.region],
+						flag
+					)
+				}
 
 				call.respond(countries)
 			}

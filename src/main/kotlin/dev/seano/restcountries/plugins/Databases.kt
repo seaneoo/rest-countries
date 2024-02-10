@@ -5,11 +5,7 @@ package dev.seano.restcountries.plugins
 import dev.seano.restcountries.DatabaseSingleton
 import io.ktor.server.application.*
 import kotlinx.coroutines.Dispatchers
-import org.jetbrains.exposed.dao.id.IntIdTable
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.Transaction
-import org.jetbrains.exposed.sql.batchInsert
-import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -32,12 +28,12 @@ fun Application.configureDatabases() {
 			it[isoAlpha2] = "US"
 			it[isoAlpha3] = "USA"
 			it[isoNumeric] = "840"
-			it[region] = 4
+			it[region] = "North America"
 		}
 		Flags.insert {
-			it[countryCode] = "US"
 			it[svg] = "https://flagcdn.com/us.svg"
 			it[png] = "https://flagcdn.com/w320/us.png"
+			it[country] = "US"
 		}
 
 		Countries.insert {
@@ -45,12 +41,12 @@ fun Application.configureDatabases() {
 			it[isoAlpha2] = "CA"
 			it[isoAlpha3] = "CAN"
 			it[isoNumeric] = "124"
-			it[region] = 4
+			it[region] = "North America"
 		}
 		Flags.insert {
-			it[countryCode] = "CA"
 			it[svg] = "https://flagcdn.com/ca.svg"
 			it[png] = "https://flagcdn.com/w320/ca.png"
+			it[country] = "CA"
 		}
 
 		Countries.insert {
@@ -58,12 +54,12 @@ fun Application.configureDatabases() {
 			it[isoAlpha2] = "GB"
 			it[isoAlpha3] = "GBR"
 			it[isoNumeric] = "826"
-			it[region] = 5
+			it[region] = "Europe"
 		}
 		Flags.insert {
-			it[countryCode] = "GB"
 			it[svg] = "https://flagcdn.com/gb.svg"
 			it[png] = "https://flagcdn.com/w320/gb.png"
+			it[country] = "GB"
 		}
 
 		Countries.insert {
@@ -71,12 +67,12 @@ fun Application.configureDatabases() {
 			it[isoAlpha2] = "JP"
 			it[isoAlpha3] = "JPN"
 			it[isoNumeric] = "392"
-			it[region] = 1
+			it[region] = "Asia"
 		}
 		Flags.insert {
-			it[countryCode] = "JP"
 			it[svg] = "https://flagcdn.com/jp.svg"
 			it[png] = "https://flagcdn.com/w320/jp.png"
+			it[country] = "JP"
 		}
 		//#endregion
 	}
@@ -86,21 +82,29 @@ suspend fun <T> query(statement: suspend Transaction.() -> T): T = newSuspendedT
 	statement()
 }
 
-@Suppress("unused")
-object Countries : IntIdTable("countries") {
+object Countries : Table("countries") {
+	val id = integer("id").autoIncrement()
 	val name = varchar("name", 100).uniqueIndex()
 	val isoAlpha2 = varchar("iso_alpha2", 2).uniqueIndex()
 	val isoAlpha3 = varchar("iso_alpha3", 3).uniqueIndex()
 	val isoNumeric = varchar("iso_numeric", 3).uniqueIndex()
-	val region = reference("region", Regions)
+	val region = reference("region", Regions.name)
+
+	override val primaryKey = PrimaryKey(id)
 }
 
-object Regions : IntIdTable("regions") {
+object Regions : Table("regions") {
+	val id = integer("id").autoIncrement()
 	val name = varchar("name", 100).uniqueIndex()
+
+	override val primaryKey = PrimaryKey(id)
 }
 
-object Flags : IntIdTable("flags") {
-	val countryCode = reference("country_code", Countries.isoAlpha2)
+object Flags : Table("flags") {
+	private val id = integer("id").autoIncrement()
 	val svg = varchar("svg", 27).uniqueIndex()
 	val png = varchar("png", 32).uniqueIndex()
+	val country = reference("country", Countries.isoAlpha2)
+
+	override val primaryKey = PrimaryKey(id)
 }
