@@ -3,10 +3,13 @@
 package dev.seano.restcountries.plugins
 
 import io.ktor.server.application.*
+import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.transactions.TransactionManager
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 
 fun Application.configureDatabases() {
@@ -19,6 +22,10 @@ fun Application.configureDatabases() {
 	transaction {
 		SchemaUtils.create(Countries, Regions)
 	}
+}
+
+suspend fun <T> query(statement: suspend Transaction.() -> T): T = newSuspendedTransaction(Dispatchers.IO) {
+	statement()
 }
 
 @Suppress("unused")
