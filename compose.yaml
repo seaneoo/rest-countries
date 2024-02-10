@@ -1,0 +1,29 @@
+services:
+  db:
+    image: mariadb:11.2.2
+    expose:
+      - 3306
+    # Set username, password, and database name.
+    #   These values must match the corresponding variables in the "app" and "proxy" services.
+    environment:
+      - MARIADB_RANDOM_ROOT_PASSWORD=1
+      - MARIADB_USER=restcountries        # It is recommended to change this.
+      - MARIADB_PASSWORD=ChangeMe         # Create your own secure password.
+      - MARIADB_DATABASE=restcountries
+    volumes:
+      - ./db_data:/var/lib/mysql
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+    ports:
+      - 8080
+    environment:
+      - KTOR_ENV=prod
+      - DB_USER=restcountries     # Must match the "MARIADB_USER" variable in the "db" service.
+      - DB_PASS=ChangeMe          # Must match the "MARIADB_PASSWORD" variable in the "db" service.
+      - DB_NAME=restcountries     # Must match the "MARIADB_DATABASE" variable in the "db" service.
+    depends_on:
+      - db
+    restart: unless-stopped
