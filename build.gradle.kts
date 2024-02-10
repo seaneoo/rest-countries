@@ -6,6 +6,7 @@ val logback_version: String by project
 val exposed_version: String by project
 val h2_version: String by project
 val prometeus_version: String by project
+val mariadb_version: String by project
 
 plugins {
 	kotlin("jvm") version "1.9.22"
@@ -44,6 +45,7 @@ dependencies {
 	implementation("io.ktor:ktor-server-status-pages-jvm")
 	implementation("io.ktor:ktor-server-netty-jvm")
 	implementation("ch.qos.logback:logback-classic:$logback_version")
+	implementation("org.mariadb.jdbc:mariadb-java-client:$mariadb_version")
 
 	testImplementation("io.ktor:ktor-server-tests-jvm")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
