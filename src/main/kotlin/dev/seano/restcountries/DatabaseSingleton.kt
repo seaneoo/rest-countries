@@ -27,7 +27,7 @@ class DatabaseSingleton private constructor(private val applicationConfig: Appli
 	 * @return [Database] The database instance.
 	 */
 	fun connect(embedded: Boolean): Database? {
-		logger.info("Attempting to connect to the database server.")
+		logger.info("Attempting to connect to the database server using ${if (embedded) "H2" else "MariaDB"}.")
 
 		if (initialized) {
 			logger.warn("The database server is already connected using ${database?.vendor} ${database?.version}.")
@@ -52,6 +52,7 @@ class DatabaseSingleton private constructor(private val applicationConfig: Appli
 
 				database = Database.connect("jdbc:mariadb://$host:$port/$name", driver, user, password = pass)
 			} catch (e: Exception) {
+				logger.error(e.message)
 				database = null
 			}
 		}
