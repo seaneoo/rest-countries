@@ -5,9 +5,7 @@ package dev.seano.restcountries.plugins
 import io.ktor.server.application.*
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.dao.id.IntIdTable
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.Transaction
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -21,6 +19,43 @@ fun Application.configureDatabases() {
 
 	transaction {
 		SchemaUtils.create(Countries, Regions)
+
+		//#region Temporary data insertion
+		val regions = listOf("Asia", "Africa", "South America", "North America", "Europe", "Oceania")
+		Regions.batchInsert(regions) { this[Regions.name] = it }
+
+		Countries.insert {
+			it[name] = "United States of America"
+			it[isoAlpha2] = "US"
+			it[isoAlpha3] = "USA"
+			it[isoNumeric] = "840"
+			it[region] = 4
+		}
+
+		Countries.insert {
+			it[name] = "Canada"
+			it[isoAlpha2] = "CA"
+			it[isoAlpha3] = "CAN"
+			it[isoNumeric] = "124"
+			it[region] = 4
+		}
+
+		Countries.insert {
+			it[name] = "United Kingdom of Great Britain and Northern Ireland"
+			it[isoAlpha2] = "GB"
+			it[isoAlpha3] = "GBR"
+			it[isoNumeric] = "826"
+			it[region] = 5
+		}
+
+		Countries.insert {
+			it[name] = "Japan"
+			it[isoAlpha2] = "JP"
+			it[isoAlpha3] = "JPN"
+			it[isoNumeric] = "392"
+			it[region] = 1
+		}
+		//#endregion
 	}
 }
 
