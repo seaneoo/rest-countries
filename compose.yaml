@@ -26,7 +26,7 @@ services:
     build:
       context: .
     ports:
-      - 8080
+      - 8080:8080
     environment:
       - KTOR_ENV=prod
       - DB_USER=restcountries     # Must match the "MARIADB_USER" variable in the "db" service.
