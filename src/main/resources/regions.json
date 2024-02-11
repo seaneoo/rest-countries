@@ -1,0 +1,49 @@
+[
+  {
+    "code": "002",
+    "name": "Africa",
+    "subregions": [
+      { "code": "015", "name": "Northern Africa" },
+      { "code": "202", "name": "Sub-Saharan Africa" }
+    ]
+  },
+  {
+    "code": "019",
+    "name": "Americas",
+    "subregions": [
+      { "code": "419", "name": "Latin America and the Caribbean" },
+      { "code": "021", "name": "Northern America" }
+    ]
+  },
+  {
+    "code": "142",
+    "name": "Asia",
+    "subregions": [
+      { "code": "143", "name": "Central Asia" },
+      { "code": "030", "name": "Eastern Asia" },
+      { "code": "035", "name": "South-eastern Asia" },
+      { "code": "034", "name": "Southern Asia" },
+      { "code": "145", "name": "Western Asia" }
+    ]
+  },
+  {
+    "code": "150",
+    "name": "Europe",
+    "subregions": [
+      { "code": "151", "name": "Eastern Europe" },
+      { "code": "154", "name": "Northern Europe" },
+      { "code": "039", "name": "Southern Europe" },
+      { "code": "155", "name": "Western Europe" }
+    ]
+  },
+  {
+    "code": "009",
+    "name": "Oceania",
+    "subregions": [
+      { "code": "053", "name": "Australia and New Zealand" },
+      { "code": "054", "name": "Melanesia" },
+      { "code": "057", "name": "Micronesia" },
+      { "code": "061", "name": "Polynesia" }
+    ]
+  }
+]
