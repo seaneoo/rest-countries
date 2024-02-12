@@ -1,8 +1,7 @@
 # REST Countries
 
 A RESTful API that consolidates data about the 246 countries and territories. All data is obtained from
-the [United Nations](https://www.un.org/)
-and [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1#Codes).
+the [United Nations](https://www.un.org/).
 
 ## License
 
