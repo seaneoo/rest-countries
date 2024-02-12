@@ -10,5 +10,6 @@ data class Country(
 	@SerialName("a2_code") val a2Code: String,
 	@SerialName("a3_code") val a3Code: String,
 	@SerialName("subregion") val subregionCode: String?,
-	@SerialName("region") val regionCode: String?
+	@SerialName("region") val regionCode: String?,
+	val flags: Flag
 )

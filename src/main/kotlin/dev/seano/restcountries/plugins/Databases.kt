@@ -4,6 +4,7 @@ package dev.seano.restcountries.plugins
 
 import dev.seano.restcountries.DatabaseSingleton
 import dev.seano.restcountries.data.dsl.Countries
+import dev.seano.restcountries.data.dsl.Flags
 import dev.seano.restcountries.data.dsl.Regions
 import dev.seano.restcountries.data.dsl.Subregions
 import dev.seano.restcountries.data.models.RawCountry
@@ -25,10 +26,15 @@ fun Application.configureDatabases() {
 	TransactionManager.defaultDatabase = database
 
 	transaction {
-		SchemaUtils.create(Regions, Subregions, Countries)
+		SchemaUtils.create(Regions, Subregions, Countries, Flags)
 
 		insertData()
 	}
+}
+
+fun getFlagEmoji(countryCode: String): String {
+	val codePoints = countryCode.uppercase().map { 127397 + it.code }.toIntArray()
+	return String(codePoints, 0, codePoints.size)
 }
 
 private fun insertData() {
@@ -60,6 +66,13 @@ private fun insertData() {
 			this[Countries.m49Code] = rawCountry.m49Code
 			this[Countries.name] = rawCountry.name
 			if (rawCountry.subregionCode.isNotBlank()) this[Countries.subregionCode] = rawCountry.subregionCode
+		}
+
+		Flags.batchInsert(countriesData) { rawCountry ->
+			this[Flags.countryCode] = rawCountry.a2Code
+			this[Flags.png] = "https://flagcdn.com/w320/${rawCountry.a2Code.lowercase()}.png"
+			this[Flags.svg] = "https://flagcdn.com/${rawCountry.a2Code.lowercase()}.svg"
+			this[Flags.emoji] = getFlagEmoji(rawCountry.a2Code)
 		}
 	}
 }
