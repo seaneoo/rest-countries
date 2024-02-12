@@ -59,6 +59,7 @@ private fun insertData() {
 			this[Countries.a3Code] = rawCountry.a3Code
 			this[Countries.m49Code] = rawCountry.m49Code
 			this[Countries.name] = rawCountry.name
+			if (rawCountry.subregionCode.isNotBlank()) this[Countries.subregionCode] = rawCountry.subregionCode
 		}
 	}
 }

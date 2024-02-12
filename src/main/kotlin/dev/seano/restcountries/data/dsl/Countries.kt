@@ -7,6 +7,7 @@ object Countries : Table("countries") {
 	val a3Code = varchar("country_a3_code", 3).uniqueIndex()
 	val m49Code = varchar("country_m49_code", 3).uniqueIndex()
 	val name = varchar("country_name", 100).uniqueIndex()
+	val subregionCode = reference("subregion_code", Subregions.code).nullable().default(null)
 
 	override val primaryKey = PrimaryKey(a2Code)
 }

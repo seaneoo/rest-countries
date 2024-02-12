@@ -3,6 +3,7 @@ package dev.seano.restcountries.routes
 import dev.seano.restcountries.BadRequestException
 import dev.seano.restcountries.NotFoundException
 import dev.seano.restcountries.data.dsl.Countries
+import dev.seano.restcountries.data.dsl.Subregions
 import dev.seano.restcountries.models.Country
 import dev.seano.restcountries.plugins.query
 import io.ktor.server.application.*
@@ -15,14 +16,16 @@ fun Route.countryRoutes() {
 	route("/countries") {
 		get {
 			query {
-				val countries =
-					Countries.selectAll().orderBy(Countries.a2Code).groupBy { it[Countries.a2Code] }.map { (_, rows) ->
+				val countries = (Countries innerJoin Subregions).selectAll().orderBy(Countries.a2Code)
+					.groupBy { it[Countries.a2Code] }.map { (_, rows) ->
 						val countryRow = rows.first()
 						Country(
 							countryRow[Countries.name],
 							countryRow[Countries.m49Code],
 							countryRow[Countries.a2Code],
-							countryRow[Countries.a3Code]
+							countryRow[Countries.a3Code],
+							countryRow[Subregions.code],
+							countryRow[Subregions.regionCode]
 						)
 					}
 
@@ -35,14 +38,17 @@ fun Route.countryRoutes() {
 			if (countryCode.isNullOrBlank()) throw BadRequestException()
 
 			query {
-				val country = Countries.selectAll().where { Countries.a2Code.lowerCase() eq countryCode.lowercase() }
-					.groupBy { it[Countries.a2Code] }.map { (_, rows) ->
+				val country = (Countries innerJoin Subregions).selectAll()
+					.where { Countries.a2Code.lowerCase() eq countryCode.lowercase() }.groupBy { it[Countries.a2Code] }
+					.map { (_, rows) ->
 						val countryRow = rows.first()
 						Country(
 							countryRow[Countries.name],
 							countryRow[Countries.m49Code],
 							countryRow[Countries.a2Code],
-							countryRow[Countries.a3Code]
+							countryRow[Countries.a3Code],
+							countryRow[Subregions.code],
+							countryRow[Subregions.regionCode]
 						)
 					}
 
