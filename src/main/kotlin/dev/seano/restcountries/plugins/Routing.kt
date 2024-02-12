@@ -1,6 +1,7 @@
 package dev.seano.restcountries.plugins
 
 import dev.seano.restcountries.HTTPException
+import dev.seano.restcountries.routes.countryRoutes
 import dev.seano.restcountries.routes.regionRoutes
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -32,5 +33,6 @@ fun Application.configureRouting() {
 		}
 
 		regionRoutes()
+		countryRoutes()
 	}
 }

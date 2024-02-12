@@ -3,8 +3,10 @@
 package dev.seano.restcountries.plugins
 
 import dev.seano.restcountries.DatabaseSingleton
+import dev.seano.restcountries.data.dsl.Countries
 import dev.seano.restcountries.data.dsl.Regions
 import dev.seano.restcountries.data.dsl.Subregions
+import dev.seano.restcountries.data.models.RawCountry
 import dev.seano.restcountries.data.models.RawRegion
 import io.ktor.server.application.*
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +25,7 @@ fun Application.configureDatabases() {
 	TransactionManager.defaultDatabase = database
 
 	transaction {
-		SchemaUtils.create(Regions, Subregions)
+		SchemaUtils.create(Regions, Subregions, Countries)
 
 		insertData()
 	}
@@ -33,6 +35,10 @@ private fun insertData() {
 	val regionsFile = object {}.javaClass.getResourceAsStream("/regions.json")?.bufferedReader()?.readText()
 		?: throw Exception("Could not read from file \"regions.json\".")
 	val regionsData = Json.decodeFromString<List<RawRegion>>(regionsFile)
+
+	val countriesFile = object {}.javaClass.getResourceAsStream("/countries.json")?.bufferedReader()?.readText()
+		?: throw Exception("Could not read from file \"countries.json\".")
+	val countriesData = Json.decodeFromString<List<RawCountry>>(countriesFile)
 
 	transaction {
 		Regions.batchInsert(regionsData) { rawRegion ->
@@ -46,6 +52,13 @@ private fun insertData() {
 				this[Subregions.name] = rawSubregion.name
 				this[Subregions.regionCode] = rawRegion.code
 			}
+		}
+
+		Countries.batchInsert(countriesData) { rawCountry ->
+			this[Countries.a2Code] = rawCountry.a2Code
+			this[Countries.a3Code] = rawCountry.a3Code
+			this[Countries.m49Code] = rawCountry.m49Code
+			this[Countries.name] = rawCountry.name
 		}
 	}
 }
